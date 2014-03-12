@@ -2,6 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*********************************************************/
+/* Contains a simple implementation of a reverse_list()  */
+/* function which works on a singly linked list.         */
+/* Eventually, I will break out the struct and function  */
+/* definitions in to seperate object and header files.   */
+/*********************************************************/
+
 // Forward Declarations
 struct Node {
   int value;
