@@ -2,12 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*********************************************************/
-/* Contains a simple implementation of a reverse_list()  */
-/* function which works on a singly linked list.         */
-/* Eventually, I will break out the struct and function  */
-/* definitions in to seperate object and header files.   */
-/*********************************************************/
+/******************************************************************************************************/
+/* Contains a simple implementation of a reverse_list() function which works on a singly linked list. */
+/* Eventually, I will break out the struct and function definitions in to seperate object and header  */
+/* files. Specify the length of the list as the first argument in the command line. The program will  */
+/* not allow you to go over 5 million members, as it may take prohibitively long or tie up computer   */
+/* resources. Add '-v' as an optional third argument to print the list pre- and post- reverse.        */
+/******************************************************************************************************/
 
 // Forward Declarations
 struct Node {
