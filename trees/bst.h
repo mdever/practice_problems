@@ -21,7 +21,7 @@ public:
 
 private:
   Node* head;
-  void insert(int val, Node* top);
+  void insert(int val, Node** top);
   void print(Node* head);
 };
 

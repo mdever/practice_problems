@@ -1,12 +1,14 @@
 #include "bst.h"
 
 Tree::Tree() {
+  head = new Node();
   head->left  = 0;
   head->right = 0;
   head->value = 0;
 }
 
 Tree::Tree(int value) {
+  head = new Node();
   head->left  = 0;
   head->right = 0;
   head->value = value;
@@ -17,18 +19,20 @@ int Tree::top() {
 }
 
 void Tree::insert(int val) {
-  insert(val, head);
+  insert(val, &(this->head));
 }
 
-void Tree::insert(int val, Node* top) {
-  Node* temp = top;
-  if(temp) {
-    temp->value = val;
-  } else if(val < temp->value) {
-    insert(val, (temp->left));
-  } else {
-    insert(val, (temp->right));
-  }
+void Tree::insert(int val, Node** top) {
+    if(!(*top)) {
+        (*top) = new Node();
+        (*top)->left  = 0;
+        (*top)->right = 0;
+        (*top)->value  = val;
+    } else if(val < (*top)->value)
+        insert(val, &((*top)->left));
+      else if(val > (*top)->value) 
+        insert(val, &((*top)->right));  
+      else { /* Eventually throw error or return sentinel value */ }
 }
 
 void Tree::print(Node* head) {
@@ -43,6 +47,7 @@ void Tree::print(Node* head) {
 }
 
 void Tree::print() {
-  print(head);
+  Node* temp = head;
+  print(temp);
 }
 
