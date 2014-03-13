@@ -1,7 +1,25 @@
-#ifndef BST_H
+#ifndef BST_H 
 #define BST_H
 
 #include <iostream>
+
+
+/***********************************************************
+/*  A binary search tree implemented in a C++ class. The 
+/*  Tree class is essentially a container holding a 
+/*  private pointer to the head Node* of the tree. All of 
+/*  public interface functions act on the private tree. 
+/*  Manipulating the tree structure directly is no allowed.
+/*  You must use the public API.
+/*
+/*  Eventually, I would like to make this a Tree of 
+/*  IComparable objects. Objects implementing the 
+/*  IComparable interface would have to implement the 
+/*  bool greaterThan(IComparable) and lessThan(IComparable)
+/*  methods. In this way, any object could be stored in
+/*  the search tree as long as there was a way to compare
+/*  it to other IComparable objects 
+/*********************************************************/
 
 class Tree {
 
