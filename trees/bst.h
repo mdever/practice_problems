@@ -17,12 +17,12 @@ public:
   void insert(int val);  
   Node* search(int val);
   int top();
-  void print();
+  void print() const;
 
 private:
   Node* head;
   void insert(int val, Node** top);
-  void print(Node* head);
+  void print(const Node* head);
 };
 
 #endif // BST_H

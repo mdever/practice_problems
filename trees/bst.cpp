@@ -35,19 +35,19 @@ void Tree::insert(int val, Node** top) {
       else { /* Eventually throw error or return sentinel value */ }
 }
 
-void Tree::print(Node* head) {
-  Node* temp = head;
-  if(temp == 0) 
-    return;
-  if(temp->left)
-    print(temp->left);
-  if(temp->right)
-    print(temp->right);
-  std::cout << temp->value << "\n";
+void Tree::print() const {
+  print(head);
 }
 
-void Tree::print() {
-  Node* temp = head;
-  print(temp);
+void Tree::print(const Node* head) {
+  Node* runner = head;
+  if(runner == 0) 
+    return;
+  if(runner->left)
+    print(runner->left);
+  if(runner->right)
+    print(runner->right);
+  std::cout << runner->value << "\n";
 }
+
 
