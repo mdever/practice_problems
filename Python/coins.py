@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
-
 This is a temporary script file.
 """
 
@@ -9,6 +8,7 @@ import sys
 from matplotlib import pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
+from datetime import datetime
 
 
 def make_change(amount, denoms, accum):
@@ -84,21 +84,27 @@ def find_min(lis):
         
 # Here is the program, essentially
 def main():
-    all_perms= make_permutations(99)
+    start_time = datetime.now()
+    all_perms = make_permutations(99)
     scores = []
     i = 0
     for perm in all_perms:
+        i = i+1
         if i % 100 == 0:
             print("On trial", i) # Just give some indication of progress
         scores.append(score(test_denoms(perm)))
     
-    index, score = find_min(scores)
+    index, the_score = find_min(scores)
     # index = 140,969
     # score = 4.1414...
     
     winning_permutation = all_perms[index]
     # winning_permutation = [38, 11, 3, 1]
     
-    print("Ideal change denominations are %s with an average coin usage of %s per transaction" % (best_option, score))
-                    
-                    
+    print("Ideal change denominations are %s with an average coin usage of %s per transaction" % (winning_permutation, the_score))
+    
+    end_time = datetime.now()
+    print(start_time)
+    print(end_time)
+    elapsed_ms = (end_time - start_time)
+    print("Elapsed time:", elapsed_ms)
