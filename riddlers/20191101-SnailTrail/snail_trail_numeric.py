@@ -105,6 +105,7 @@ for i in range(len(x0)-1):
     delta_y = y0_real[i+1] - y0_real[i]
     length += np.sqrt(delta_x**2 + delta_y**2)
 
+plt.figure()
 plt.xlim((-10, 20))
 plt.ylim((-20, 3))
 plt.plot([0,  10], [0,                 0],               'k-')
@@ -120,4 +121,4 @@ plt.plot(x2_real, y2_real)
 plt.plot(x3_real, y3_real)
 plt.plot(x4_real, y4_real)
 plt.plot(x5_real, y5_real)
-
+plt.show()
