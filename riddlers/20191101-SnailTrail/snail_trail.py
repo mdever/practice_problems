@@ -4,6 +4,8 @@
 Created on Sun Nov  3 19:39:12 2019
 
 @author: mark
+
+From https://fivethirtyeight.com/features/how-long-is-the-snails-slimy-trail/
 """
 
 from sympy import *

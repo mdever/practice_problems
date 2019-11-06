@@ -3,7 +3,9 @@
 """
 Created on Mon Nov  4 23:24:23 2019
 
-@author: rk
+@author: mark
+
+From https://fivethirtyeight.com/features/how-long-is-the-snails-slimy-trail/
 """
 
 import numpy as np
