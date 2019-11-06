@@ -34,8 +34,7 @@ def bad_draw_probability(total, counterfeit, drawn, result_type='count'):
     combos = all_combinations(total, drawn)  # (1, 2, 3), (1, 2, 4), ...
     total_combos = len(combos)
     candidates = set([i for i in range(1, counterfeit+1)]) # {1, 2, 3, 4}
-    print(candidates)
-        
+
     count = dict()
     for i in range(drawn+1):
         count[i] = 0
@@ -70,10 +69,11 @@ def expected_bank_account(numreal, numfake):
         
 
 xs = [i for i in range(50)]
-print(xs)
 
 E_deposit = []
 for i, x in enumerate(xs):
     E_deposit.append(expected_bank_account(25, x))
-    
+
+plt.figure()
 plt.plot(E_deposit)
+plt.show()
