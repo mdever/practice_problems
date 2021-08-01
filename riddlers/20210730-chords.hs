@@ -16,10 +16,11 @@ import Data.Complex
 
 genPoints p =
     let
-        pts = [ (sum [ (p^(n-1)) * (exp ((0 :+ 1) * (fromIntegral n) * (fromIntegral theta) * (pi/24))) | n <- [1..100]]) | theta <- [0..48]]
+        pts = [ finalPoint theta | theta <- [0..48]]
     in
-        zipWith (\r i -> (r, i)) (fmap (truncate . realPart) pts) (fmap (truncate . imagPart) pts)
+        zip (fmap (truncate . realPart) pts) (fmap (truncate . imagPart) pts)
     where
+        finalPoint angle = sum [ (p^(n-1)) * (exp ((0 :+ 1) * (fromIntegral n) * (fromIntegral angle) * (pi/24))) | n <- [1..100] ]
         truncate num 
             | (abs num) < 0.00001 = 0
             | otherwise = num
