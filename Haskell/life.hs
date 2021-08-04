@@ -1,50 +1,91 @@
-import Data.Matrix
-import qualified Data.Vector as V
+import Data.Bifunctor
 
-newtype (Neighbors a) = Neighbors [Maybe a] deriving Show
+data Cell = On | Off
+    deriving (Eq)
 
-topLeft (Neighbors xs) = head xs
-top (Neighbors xs) = xs !! 1
-topRight (Neighbors xs) = xs !! 2
-left (Neighbors xs) = xs !! 3
-right (Neighbors xs) = xs !! 4
-bottomLeft (Neighbors xs) = xs !! 5
-bottom (Neighbors xs) = xs !! 6
-bottomRight (Neighbors xs) = xs !! 7
-getNeighbs (Neighbors ns) = ns
+instance Show Cell where
+    show On  = "1"
+    show Off = "0"
 
-newtype LifeRule a = LifeRule { rule :: (Neighbors a -> a) }
+type Board = [[Cell]]
 
-neighborsFor mat (r, c) = Neighbors $ resolveNeighbors $ map checkBounds [(r-1, c-1), (r-1, c), (r-1, c+1), 
-                                                                          (r, c-1),             (r, c+1),
-                                                                          (r+1, c-1), (r+1, c), (r+1, c+1)]
-                              where
-                                   checkBounds (rw, cl) = if (rw == 0 || rw > numRows || cl == 0 || cl > numCols) then Nothing else Just (rw, cl)
-                                   resolveNeighbors ns
-                                       | (null ns) = []
-                                       | otherwise = case (head ns) of
-                                           Nothing -> Nothing : (resolveNeighbors (tail ns))
-                                           Just (r, c) -> (Just (getElem r c mat)) : (resolveNeighbors (tail ns))
-                                   numRows = nrows mat
-                                   numCols = ncols mat
+board :: Board
+board = [[Off, On, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, On, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [On, On, On, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off],
+         [Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off, Off]]
 
+data Neighborhood = Neighbors {
+                             top :: Cell
+                           , topRight :: Cell
+                           , right :: Cell
+                           , bottomRight :: Cell
+                           , bottom :: Cell
+                           , bottomLeft :: Cell
+                           , left :: Cell
+                           , topLeft :: Cell
+                           }
 
-simpleLifeRule = LifeRule $ \neighbs -> if (countActive (getNeighbs neighbs)) >= 2 && (countActive (getNeighbs neighbs)) < 5 then 1 else 0
-                 where
-                 	countActive ns = foldl (\n1 n2 -> case n2 of
-                 		                                  Nothing -> n1
-                 		                                  Just something -> if something == 0 then n1 else n1 + 1) 0 ns
+boardAt :: Board -> (Int, Int) -> Cell
+boardAt brd (row, col)
+    | row < 0      = Off
+    | row > maxRow = Off
+    | col < 0      = Off
+    | col > maxCol = Off
+    | otherwise = (brd !! row) !! col
+  where
+    (maxRow, maxCol) = bimap dec dec (dimensions brd)
+    dec = subtract 1
 
-indices :: (Matrix a) -> (Matrix (Int, Int))
-indices mat = matrix (nrows mat) (ncols mat) (\(r, c) -> (r, c))
+dimensions :: Board -> (Int, Int)
+dimensions brd = (length brd, length (head brd))
 
-flattenMat :: (Matrix a) -> [a]
-flattenMat mat = concat $ (flattenMat' mat 1)
-                 where
-                 	flattenMat' mat n
-                 	    | n > (nrows mat) = []
-                 	    | otherwise = (V.toList (getRow n mat)) : (flattenMat' mat (n+1))
+neighbors :: Board -> (Int, Int) -> Neighborhood
+neighbors brd (row, col) =
+    Neighbors (at (row+1, col)) (at (row+1, col+1)) (at (row, col+1)) (at (row-1, col+1))
+              (at (row-1, col)) (at (row-1, col-1)) (at (row, col-1)) (at (row+1, col-1))
+    where
+        at = boardAt brd
 
-lifeStep (LifeRule rule) mat = fromList (nrows mat) (ncols mat) $ map rule (map (neighborsFor mat) (flattenMat (indices mat)))                 	    
+liveNeighbors :: Board -> (Int, Int) -> Int
+liveNeighbors brd (row, col) = let
+                                 neighbs = neighbors brd (row, col)
+                               in
+                                 count neighbs
+                               where
+                                 count (Neighbors t tr r br b bl l tl) = sum $ fmap toInt [t, tr, r, br, b, bl, l, tl]
+                                 toInt On  = 1
+                                 toInt Off = 0
 
-testMat = (setElem 1 (3,3)) (setElem 1 (3,2) (setElem 1 (2,3) (zero 5 5)))
+showBoard :: Board -> String
+showBoard (row:rows) = (show row) ++ "\n" ++ (showBoard rows)
+showBoard [] = ""
+
+update :: Board -> Board
+update brd = [ [ update' (row, col) | col <- [0..cols-1] ] | row <- [0..rows-1] ]
+    where rows = fst (dimensions brd)
+          cols = snd (dimensions brd)
+          update' (row, col) 
+            | currentCell == On = if livingNeighbors == 2 then On else if livingNeighbors == 3 then On else Off
+            | otherwise         = if livingNeighbors == 3 then On else Off
+            where
+              currentCell = boardAt brd (row, col)
+              livingNeighbors = liveNeighbors brd (row, col)
+
+runGame :: Board -> IO Board
+runGame brd = do
+    putStrLn $ showBoard brd
+    getLine
+    runGame $ update brd
+
+main = runGame board
