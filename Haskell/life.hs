@@ -100,7 +100,8 @@ liveNeighbors brd (row, col) = let
                                  toInt Off = 0
 
 showBoard :: Board -> String
-showBoard (row:rows) = (show row) ++ "\n" ++ (showBoard rows)
+showBoard (row:rows) = (showRow row) ++ "\n" ++ (showBoard rows)
+    where showRow row = foldr (\cell prev -> prev ++ " " ++ (show cell)) "" row
 showBoard [] = ""
 
 update :: Board -> Board
